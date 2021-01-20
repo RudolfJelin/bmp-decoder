@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
-
 #include "dataBMP.h"
 
 void * safe_malloc(long size) // exits if problem occurs
@@ -47,9 +46,6 @@ unsigned char * load_bmp(char * name, BMPHeader_t * BMPHeader, unsigned char ** 
 		exit(2);
 	}
 	
-	printf("Header size is: %d\n", (int)sizeof(BMPHeader_t));
-	printf("Data offset is: %d\n", BMPHeader->offset);
-	
 	fseek(fp, BMPHeader->offset, SEEK_SET);
 	
 	unsigned char * BMPImage = (unsigned char *)safe_malloc(BMPHeader->image_size_bytes);
@@ -74,11 +70,9 @@ void save_bmp(char * name, BMPHeader_t BMPHeader, unsigned char * headerFull, un
 	fwrite(headerFull,BMPHeader.offset,1,fpw);
 	fwrite(BMPData,BMPHeader.image_size_bytes,1,fpw);
 	fclose(fpw);
-	
 }
 
-// switch lines
-// only works for 
+// switch lines. Has to do a correction for even-sized images
 unsigned char * switcheroo(unsigned char * BMPData, int height, int width)  // assumes 1 byte per pixel
 {
 	int size = height * width;
@@ -100,12 +94,10 @@ unsigned char * switcheroo(unsigned char * BMPData, int height, int width)  // a
 		}
 	}
 	
-
 	free(BMPData);
 	return newBMPData;
 }
 
-// 
 int main(int argc, char * argv[])
 {
 	char * input = malloc(80*sizeof(char));
@@ -141,8 +133,4 @@ int main(int argc, char * argv[])
 	free(BMPData);
 	return 0;
 }
-	
-	
-	
-	
 	
